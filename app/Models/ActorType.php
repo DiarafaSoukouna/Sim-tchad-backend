@@ -19,4 +19,6 @@ class ActorType extends Model
 {
     return $this->belongsToMany(Actor::class, 'actor_multiple_types', 'actor_type_id', 'actor_id');
 }
+
+  
 }

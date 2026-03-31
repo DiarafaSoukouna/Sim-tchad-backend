@@ -18,9 +18,9 @@ class ActorController extends Controller
     $validation = Validator::make($request->all(), [
         'actor'             => 'required|string|max:255',
         'actor_sigle'       => 'required|string|max:100',
-        'password'          => 'required|string|min:8',
+        'password'          => 'required|string',
         'updated_by'        => 'nullable|string',
-        'code'              => 'required|string|unique:actors,code',
+        // 'code'              => 'required|string|unique:actors,code',
         'description'       => 'nullable|string',
         'phone'             => 'required|string|max:20|unique:actors,phone',
         'logo'              => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -52,9 +52,12 @@ class ActorController extends Controller
     // Attach multiple actor types using the pivot table
     $actor->types()->sync($request->input('actor_type_ids'));
 
-   $sendMail = new MessagesController();
-$sendMail->SendMailTo(new Request([
-    'email'   => $actor->email,
+   
+try {
+    $sendMail = new MessagesController();
+
+    $sendMail->SendMailTo(new Request([
+        'email'   => $actor->email,
     'subject' => 'Bienvenue sur SIM Tchad – Votre compte est en attente de validation',
     'message' => "
         <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
@@ -92,7 +95,10 @@ $sendMail->SendMailTo(new Request([
 
         </div>
     "
-]));
+    ]));
+} catch (\Exception $e) {
+    \Log::error('Erreur envoi mail actor: ' . $e->getMessage());
+}
     return response()->json([
         'Message' => 'Acteur crée avec succès',
         'data' => $actor->load('types')
@@ -255,7 +261,7 @@ public function update(Request $request, $id)
         }
 
         $validation = Validator::make($request->all(), [
-            'password' => 'required|string|min:8',
+            'password' => 'required|string',
         ]);
 
         if ($validation->fails()) {

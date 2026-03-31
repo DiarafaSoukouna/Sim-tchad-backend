@@ -14,6 +14,7 @@ class Category extends Model
         'sector_id',
         'icons',
         'is_active',
+        'responsible_id',
         'updated_by',
     ];
 }

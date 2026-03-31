@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->foreignId('sector_id')->constrained('sectors')->onDelete('cascade');
             $table->boolean('is_active')->default(true);
+            $table->foreignId('responsible_id')->nullable()->constrained('actors')->onDelete('set null');
             $table->string('updated_by')->nullable();
             $table->timestamps();
         });

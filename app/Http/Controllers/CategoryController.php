@@ -30,6 +30,7 @@ class CategoryController extends Controller
         'code'        => 'required|string|max:100|unique:categories,code',
         'sector_id'   => 'required|exists:sectors,id',
         'icons'      => 'nullable|string|max:255',
+        'responsible_id' => 'nullable|exists:actors,id'
     ]);
       if ($validation->fails()) {
       return response()->json([
@@ -53,7 +54,8 @@ public function update(Request $request, $id): JsonResponse
         'description' => 'nullable|string',
         'code'        => 'sometimes|string|max:100|unique:categories,code,' . $category->id,
         'sector_id'   => 'sometimes|exists:sectors,id',
-        'icons'      => 'nullable|string|max:255'
+        'icons'      => 'nullable|string|max:255',
+        'responsible_id' => 'sometimes|nullable|exists:actors,id'
     ]);
 
     if ($validation->fails()) {

@@ -20,6 +20,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MessagesController;
+use App\Http\Controllers\AlertController;
 
 
 
@@ -78,4 +79,5 @@ Route::post('notification', [NotificationController::class, 'store']);
 Route::delete('notification/{id}', [NotificationController::class, 'destroy']);
 Route::post('notification/markAsRead/{id}', [NotificationController::class, 'markAsRead']);
 Route::post('email/send', [MessagesController::class, 'SendMailTo']);
+Route::apiResource('alert', AlertController::class);
 // Route::post('whatsapp/send', [MessagesController::class, 'Whatsapp']);
