@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SendMail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
+use App\Services\WhatsAppService;
+
 
 class MessagesController extends Controller
 {
@@ -32,10 +34,46 @@ class MessagesController extends Controller
 
         return "Mail envoyé avec succès à $recipient !";
     }
-    public function Whatsapp()
-    {
-        return response()->json(['Message' => 'SMS sent successfully'], 200);
-    }
    
+
+    public function Whatsapp(Request $request) : JsonResponse
+{
+    $validation = Validator::make($request->all(), [
+        'phone_number' => 'required|string',
+        'message' => 'required|string',
+    ]);
+
+    if ($validation->fails()) {
+        return response()->json([
+            'errors' => $validation->errors()
+        ], 422);
+    }
+
+    $whatsapp = new WhatsAppService();
+
+    $phone = $request->input('phone_number');
+    $message = $request->input('message');
+
+    $phone = $request->input('phone_number');
+
+// nettoyer le numéro
+$phone = preg_replace('/[^0-9]/', '', $phone);
+
+// ajouter suffix WhatsApp
+$phoneFormatted = $phone . '@c.us';
+
+    try {
+        $whatsapp->sendMessage($phoneFormatted, $message);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => 'Erreur envoi WhatsApp',
+            'details' => $e->getMessage()
+        ], 500);
+    }
+
+    return response()->json([
+        'message' => 'Message envoyé avec succès'
+    ], 200);
+}
 }
 

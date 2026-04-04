@@ -31,6 +31,7 @@ class Actor extends Authenticatable
         'latitude',
         'longitude',
         'password',
+        'status',
         'updated_by_actor_id',
     ];
 

@@ -54,9 +54,9 @@ class ActorController extends Controller
 
    
 try {
-    $sendMail = new MessagesController();
+    $sendMessage = new MessagesController();
 
-    $sendMail->SendMailTo(new Request([
+    $sendMessage->SendMailTo(new Request([
         'email'   => $actor->email,
     'subject' => 'Bienvenue sur SIM Tchad – Votre compte est en attente de validation',
     'message' => "
@@ -95,6 +95,25 @@ try {
 
         </div>
     "
+    ]));
+  $sendMessage->Whatsapp(new Request([
+    'phone_number' => $actor->phone,
+    'message' => "
+    🎉 *Bienvenue sur SIM Tchad !*
+
+    Bonjour *{$actor->actor}*,
+
+    Merci de vous être inscrit sur *SIM Tchad*. Nous sommes ravis de vous compter parmi nos utilisateurs.
+
+    ⏳ *Votre compte est actuellement en attente de validation.*
+
+    Dès que l'administrateur aura validé votre compte, vous recevrez une confirmation et vous pourrez vous connecter à la plateforme.
+
+    En attendant, n'hésitez pas à nous contacter si vous avez des questions ou besoin d'assistance.
+
+    Cordialement,
+    ✉️ *L'équipe SIM Tchad*
+        "
     ]));
 } catch (\Exception $e) {
     \Log::error('Erreur envoi mail actor: ' . $e->getMessage());

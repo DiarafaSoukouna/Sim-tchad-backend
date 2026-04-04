@@ -21,6 +21,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\AlertController;
+use App\Http\Controllers\OtpCodeController;
 
 
 
@@ -80,4 +81,7 @@ Route::delete('notification/{id}', [NotificationController::class, 'destroy']);
 Route::post('notification/markAsRead/{id}', [NotificationController::class, 'markAsRead']);
 Route::post('email/send', [MessagesController::class, 'SendMailTo']);
 Route::apiResource('alert', AlertController::class);
-// Route::post('whatsapp/send', [MessagesController::class, 'Whatsapp']);
+Route::post('whatsapp/send', [MessagesController::class, 'Whatsapp']);
+Route::post('otp/send', [OtpCodeController::class, 'sendOtp']);
+Route::post('otp/verify', [OtpCodeController::class, 'verifyOtp']);
+Route::post('otp/reset-password', [OtpCodeController::class, 'resetPassword']);
