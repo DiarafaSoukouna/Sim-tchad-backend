@@ -17,4 +17,8 @@ class Category extends Model
         'responsible_id',
         'updated_by',
     ];
+        public function sectors()
+{
+    return $this->belongsTo(Sector::class, 'sector_id');
+}
 }
