@@ -8,8 +8,12 @@ class Attribute extends Model
 {
     protected $fillable =[
         'name',
-        'product_type_id'
+        'speculation_id'
 
     ];
+    public function speculation()
+{
+    return $this->belongsTo(Speculation::class, 'speculation_id');
+}
 
 }

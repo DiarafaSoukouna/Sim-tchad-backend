@@ -54,8 +54,6 @@ class MessagesController extends Controller
     $phone = $request->input('phone_number');
     $message = $request->input('message');
 
-    $phone = $request->input('phone_number');
-
 // nettoyer le numéro
 $phone = preg_replace('/[^0-9]/', '', $phone);
 

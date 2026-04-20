@@ -10,6 +10,7 @@ class OtpCode extends Model
         'identifier',
         'code',
         'expires_at',
+        'verified'
     ];
 
     protected $dates = ['expires_at'];

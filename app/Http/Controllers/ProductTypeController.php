@@ -18,7 +18,7 @@ class ProductTypeController extends Controller
     
     public function indexWithAttributes(): JsonResponse
     {
-        $productionTypes = ProductType::with('attributes')->get();
+        $productionTypes = ProductType::all();
         return response()->json(['Message' => 'Product Types with attributes recuperés avec succes', 'data' => $productionTypes], 200);
     }
 
@@ -37,8 +37,6 @@ class ProductTypeController extends Controller
             'code'        => 'required|string|max:100|unique:product_types,code',
             'description' => 'nullable|string',
             'updated_by'  => 'nullable|string|max:255',
-            'attributes'  => 'nullable|array',
-            'attributes.*.name' => 'required_with:attributes|string|max:255',
         ]);
 
         if ($validation->fails()) {
@@ -53,23 +51,11 @@ class ProductTypeController extends Controller
         try {
             $productionType = ProductType::create($validation->validated());
 
-            if ($request->has('attributes')) {
-                foreach ($request->input('attributes') as $attributeData) {
-                    Attribute::updateOrCreate(
-                        [
-                            'name' => $attributeData['name'],
-                            'product_type_id' => $productionType->id
-                        ],
-                        []
-                    );
-                }
-            }
-
             \DB::commit();
 
             return response()->json([
                 'Message' => 'Type de produit créé avec succès',
-                'data' => $productionType->load('attributes')
+                'data' => $productionType
             ], 201);
 
         } catch (\Exception $e) {
@@ -95,8 +81,6 @@ class ProductTypeController extends Controller
             'code'        => 'sometimes|required|string|max:100|unique:product_types,code,' . $id,
             'description' => 'nullable|string',
             'updated_by'  => 'nullable|string|max:255',
-            'attributes'  => 'nullable|array',
-            'attributes.*.name' => 'required_with:attributes|string|max:255',
         ]);
 
         if ($validation->fails()) {
@@ -111,23 +95,11 @@ class ProductTypeController extends Controller
         try {
             $productionType->update($validation->validated());
 
-            if ($request->has('attributes')) {
-                foreach ($request->input('attributes') as $attributeData) {
-                    Attribute::updateOrCreate(
-                        [
-                            'name' => $attributeData['name'],
-                            'product_type_id' => $productionType->id
-                        ],
-                        []
-                    );
-                }
-            }
-
             \DB::commit();
 
             return response()->json([
                 'Message' => 'Type de produit mis à jour avec succès',
-                'data' => $productionType->load('attributes')
+                'data' => $productionType
             ], 200);
 
         } catch (\Exception $e) {
@@ -148,14 +120,5 @@ class ProductTypeController extends Controller
         }
         $productionType->delete();
         return response()->json(['Message' => 'Type de produit supprimé avec succès'], 200);
-    }
-    public function attributesByProductType($id): JsonResponse
-    {
-        $productionType = ProductType::find($id);
-        if (!$productionType) {
-            return response()->json(['Message' => 'Type de produit non trouvé'], 404);
-        }
-        $attributes = $productionType->attributes;
-        return response()->json(['Message' => 'Attributs récupérés avec succès', 'data' => $attributes], 200);
     }
 }

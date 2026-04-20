@@ -33,10 +33,7 @@ class Product extends Model
 {
     return $this->hasMany(AttributeValue::class);
 }
-public function productType()
-{
-    return $this->belongsTo(ProductType::class);
-}
+
 public function speculation()
 {
     return $this->belongsTo(Speculation::class, 'speculation_id');

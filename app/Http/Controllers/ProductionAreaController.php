@@ -31,7 +31,7 @@ public function show($id) : JsonResponse
     'latitude'   => 'nullable|numeric|between:-90,90',
     'longitude'  => 'nullable|numeric|between:-180,180',
     'address'    => 'nullable|string|max:255',
-    'photo'      => 'nullable|string|max:255',
+    'photo'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
     'updated_by' => 'nullable|string|max:255',
 ]);
 
@@ -42,7 +42,13 @@ if ($validation->fails()) {
     ], 422);
 }
 
-        $production_area = ProductionArea::create($request->all());
+  $data = $validation->validated();
+
+  if ($request->hasFile('photo')) {
+      $data['photo'] = $request->file('photo')->store('production_areas', 'public');
+  }
+
+  $production_area = ProductionArea::create($data);
         return response()->json(['Message' => 'Zone de production creee avec succes', 'data' => $production_area], 201);
     }
     public function update(Request $request, $id) : JsonResponse
@@ -58,7 +64,7 @@ if ($validation->fails()) {
     'latitude'   => 'nullable|numeric|between:-90,90',      
     'longitude'  => 'nullable|numeric|between:-180,180',
     'address'    => 'nullable|string|max:255',
-    'photo'      => 'nullable|string|max:255',
+    'photo'      => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
     'updated_by' => 'nullable|string|max:255',
 ]);
 
@@ -68,7 +74,13 @@ if ($validation->fails()) {
         'errors'  => $validation->errors(),
     ], 422);
 }      
-        $production_area->update($request->all());
+  $data = $validation->validated();
+
+  if ($request->hasFile('photo')) {
+      $data['photo'] = $request->file('photo')->store('production_areas', 'public');
+  }
+
+  $production_area->update($data);
         return response()->json(['Message' => 'Zone de production mise a jour avec succes', 'data' => $production_area], 200);
     }
     public function destroy($id) : JsonResponse

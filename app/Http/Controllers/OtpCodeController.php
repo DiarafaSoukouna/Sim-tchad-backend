@@ -67,33 +67,47 @@ class OtpCodeController extends Controller
     /**
      * 2. VÉRIFIER OTP
      */
-    public function verifyOtp(Request $request)
-    {
-        $request->validate([
-            'identifier' => 'required',
-            'code' => 'required'
-        ]);
+   public function verifyOtp(Request $request)
+{
+    $request->validate([
+        'identifier' => 'required',
+        'code' => 'required'
+    ]);
 
-        $otp = OtpCode::where('identifier', $request->identifier)
-            ->where('code', $request->code)
-            ->first();
+    // récupérer OTP
+    $otp = OtpCode::where('identifier', $request->identifier)
+        ->where('code', $request->code)
+        ->first();
 
-        if (!$otp) {
-            return response()->json(['message' => 'Code invalide'], 400);
-        }
-
-        if (Carbon::now()->isAfter($otp->expires_at)) {
-            return response()->json(['message' => 'Code expiré'], 400);
-        }
-
-        $otp->update([
-            'verified' => true
-        ]);
-
+    if (!$otp) {
         return response()->json([
-            'message' => 'OTP vérifié avec succès'
-        ]);
+            'message' => 'Code invalide'
+        ], 400);
     }
+
+    // vérifier si déjà utilisé
+    if ($otp->verified) {
+        return response()->json([
+            'message' => 'Code déjà utilisé'
+        ], 400);
+    }
+
+    // vérifier expiration
+    if (Carbon::now()->isAfter($otp->expires_at)) {
+        return response()->json([
+            'message' => 'Code expiré'
+        ], 400);
+    }
+
+    // marquer comme vérifié
+    $otp->update([
+        'verified' => true
+    ]);
+
+    return response()->json([
+        'message' => 'OTP vérifié avec succès'
+    ]);
+}
 
     /**
      * 3. RESET PASSWORD
@@ -102,7 +116,7 @@ class OtpCodeController extends Controller
     {
         $request->validate([
             'identifier' => 'required',
-            'password' => 'required|min:6'
+            'password' => 'required'
         ]);
 
         $otp = OtpCode::where('identifier', $request->identifier)

@@ -16,7 +16,7 @@ class ProductController extends Controller
 public function index(): JsonResponse
 {
    $products = Product::with([
-    'productType.attributes',
+    'speculation.attributes',
     'attributeValues',
     'speculation.categorie'
 ])->get();
@@ -25,7 +25,7 @@ $data = $products->map(function ($product) {
 
     $valuesByAttribute = $product->attributeValues->keyBy('attribute_id');
 
-    $attributes = $product->productType->attributes->map(function ($attr) use ($valuesByAttribute) {
+    $attributes = optional($product->speculation->attributes ?? collect())->map(function ($attr) use ($valuesByAttribute) {
         return [
             'attribute_id' => $attr->id,
             'name' => $attr->name,
@@ -40,7 +40,7 @@ $data = $products->map(function ($product) {
         'name' => $product->name,
         'code' => $product->code,
         'description' => $product->description,
-        'product_type_id' => $product->product_type_id,
+        'product_type_id' => null,
         'speculation_id' => $product->speculation_id,
         'categorie_id' => $categorie->id ?? null,
         'categorie_name' => $categorie->name ?? null,
