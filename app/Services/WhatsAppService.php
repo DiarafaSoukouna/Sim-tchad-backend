@@ -11,8 +11,8 @@ class WhatsAppService
     public function __construct()
     {
         $this->client = new GreenApiClient(
-            env('services.green_api.id_instance'),
-            env('services.green_api.api_token')
+            config('services.green_api.id_instance'),
+            config('services.green_api.api_token')
         );
     }
 
