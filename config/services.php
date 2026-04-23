@@ -33,6 +33,14 @@ return [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
+
+    'green_api' => [
+    'id_instance' => env('GREEN_API_ID_INSTANCE'),
+    'api_token' => env('GREEN_API_TOKEN'),
+
+
+],
+
     ],
 
 ];

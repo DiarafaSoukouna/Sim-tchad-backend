@@ -11,15 +11,15 @@ class WhatsAppService
     public function __construct()
     {
         $this->client = new GreenApiClient(
-            env('GREEN_API_ID_INSTANCE'),
-            env('GREEN_API_TOKEN')
+            env('services.green_api.id_instance'),
+            env('services.green_api.api_token')
         );
     }
 
     public function sendMessage($phone, $message)
     {
         return $this->client->sending->sendMessage(
-            $phone . '@c.us',
+            $phone,
             $message
         );
     }

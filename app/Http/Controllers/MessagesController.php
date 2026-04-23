@@ -11,6 +11,11 @@ use App\Services\WhatsAppService;
 class MessagesController extends Controller
 {
 
+ protected $greenApi;
+     public function __construct(WhatsAppService $greenApi)
+    {
+        $this->greenApi = $greenApi;
+    }
     public function SendMailTo(Request $request)
 
     {
@@ -38,6 +43,8 @@ class MessagesController extends Controller
 
     public function Whatsapp(Request $request) : JsonResponse
 {
+   
+
     $validation = Validator::make($request->all(), [
         'phone_number' => 'required|string',
         'message' => 'required|string',
@@ -47,21 +54,22 @@ class MessagesController extends Controller
         return response()->json([
             'errors' => $validation->errors()
         ], 422);
-    }
+    };
 
-    $whatsapp = new WhatsAppService();
+
+   
 
     $phone = $request->input('phone_number');
     $message = $request->input('message');
 
 // nettoyer le numéro
-$phone = preg_replace('/[^0-9]/', '', $phone);
+// $phone = preg_replace('/[^0-9]/', '', $phone);
 
 // ajouter suffix WhatsApp
 $phoneFormatted = $phone . '@c.us';
 
     try {
-        $whatsapp->sendMessage($phoneFormatted, $message);
+        $result = $this->greenApi->sendMessage($phoneFormatted, $message);
     } catch (\Exception $e) {
         return response()->json([
             'error' => 'Erreur envoi WhatsApp',
@@ -70,8 +78,12 @@ $phoneFormatted = $phone . '@c.us';
     }
 
     return response()->json([
-        'message' => 'Message envoyé avec succès'
+        'message' => 'Message envoyé avec succès',
+        'data' => $result
     ], 200);
 }
 }
+
+
+
 
